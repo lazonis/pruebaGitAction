@@ -1,0 +1,48 @@
+name: calculadora
+
+on:
+  push:
+
+jobs:
+  build:
+    runs-on:
+      - ubuntu-latest
+    steps:
+      - name: download repository
+        uses: actions/checkout@v2
+
+      - name: setup java
+        uses: actions/setup-java@v3
+        with:
+          java-version: '21'
+          distribution: 'temurin'
+
+      - name: compile program
+        run: |
+          mkdir -p out
+          javac -d out src/*.java
+
+      - name: run test
+        run: |
+          cd out
+          # Nota: Para ejecutar las aserciones (asserts), necesitarías la opción -ea:
+          # java -ea CalculadoraTest
+          java CalculadoraTest
+
+      - name: create jar
+        run: |
+          cd out
+          # Nota: La sintaxis para crear un JAR ejecutable es 'jar cfe nombre.jar Main.clase' y luego los archivos.
+          # Asumiendo que 'Main' es tu clase principal y que los archivos ya están en 'out'
+          # (y asumiendo que el archivo de la clase se llama Main.class):
+          jar cfe Calculadora.jar src.Main *.class
+
+      - name: run jar
+        # Nota: La clase principal en tu estructura es 'Main', no 'Calculadora', y se ejecuta el JAR.
+        run: java -jar out/Calculadora.jar
+
+      - name: generar jar y subir artefacto
+        uses: actions/upload-artifact@v3
+        with:
+          name: Calculadora
+          path: out/Calculadora.jar
