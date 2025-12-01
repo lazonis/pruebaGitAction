@@ -42,7 +42,7 @@ jobs:
         run: java -jar out/Calculadora.jar
 
       - name: generar jar y subir artefacto
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v5
         with:
           name: Calculadora
           path: out/Calculadora.jar
